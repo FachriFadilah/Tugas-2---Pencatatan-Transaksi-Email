@@ -1,0 +1,432 @@
+{
+  "name": "Tugas 2 - Pencatatan Transaksi Email",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        272
+      ],
+      "id": "77b9894c-95f4-4eed-a46b-7d9bfd80de94",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "LYEPltRvK452irdi",
+          "name": "IMAP account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "grab",
+                    "leftValue": "={{ $json.from }}",
+                    "rightValue": "grab",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Grab"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "tokopedia",
+                    "leftValue": "={{ $json.from }}",
+                    "rightValue": "tokopedia",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Tokopedia"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "idcloudhost",
+                    "leftValue": "={{ $json.from }}",
+                    "rightValue": "idcloudhost",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IDCloudHost"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -304,
+        272
+      ],
+      "id": "7fca97f4-8a8d-41d6-84d1-9fda4fb2e2ea",
+      "name": "Switch Pengirim"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "Tanggal",
+              "value": "={{ ($json.text.match(/(\\d{1,2}\\s+(?:Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Agt|Sep|Okt|Nov|Des)[a-z]*\\s+\\d{4})/i) || [])[1] || $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "Merchant",
+              "value": "Grab",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "Nominal",
+              "value": "={{ Number((($json.text.match(/Total[^\\d]{0,30}([\\d.,]+)/i) || [])[1] || '0').replace(/\\./g, '').replace(/,\\d{1,2}$/, '')) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        80
+      ],
+      "id": "8f949ca4-edb2-4bfb-a9ab-6171cdd5272f",
+      "name": "Set Grab"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "Tanggal",
+              "value": "={{ ($json.text.match(/(\\d{1,2}\\s+(?:Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Agt|Sep|Okt|Nov|Des)[a-z]*\\s+\\d{4})/i) || [])[1] || $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "Merchant",
+              "value": "Tokopedia",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "Nominal",
+              "value": "={{ Number((($json.text.match(/Total\\s+(?:Pembayaran|Tagihan)[^\\d]{0,30}([\\d.,]+)/i) || [])[1] || '0').replace(/\\./g, '').replace(/,\\d{1,2}$/, '')) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        272
+      ],
+      "id": "c8c60266-2875-4d22-9e84-0a7bb3ac6da4",
+      "name": "Set Tokopedia"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "Tanggal",
+              "value": "={{ ($json.text.match(/(\\d{1,2}\\s+(?:Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Agt|Sep|Okt|Nov|Des)[a-z]*\\s+\\d{4})/i) || [])[1] || $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "Merchant",
+              "value": "IDCloudHost",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "Nominal",
+              "value": "={{ Number((($json.text.match(/(?:Total|Amount)[^\\d]{0,30}([\\d.,]+)/i) || [])[1] || '0').replace(/\\./g, '').replace(/,\\d{1,2}$/, '')) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        448
+      ],
+      "id": "9a96698c-63c9-49db-8dd1-7602b19ed08d",
+      "name": "Set IDCloudHost"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        272,
+        272
+      ],
+      "id": "6ff8cbb7-064a-4335-a2a9-64532f1fdeaf",
+      "name": "Merge (Append)"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1OBUQPIlAjzqFqGsS3nlJZwDfwNMjYtGkiPAJCyAgslE",
+          "mode": "list",
+          "cachedResultName": "Pencatatan Keuangan",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OBUQPIlAjzqFqGsS3nlJZwDfwNMjYtGkiPAJCyAgslE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OBUQPIlAjzqFqGsS3nlJZwDfwNMjYtGkiPAJCyAgslE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Tanggal": "={{ $json.Tanggal }}",
+            "Merchant": "={{ $json.Merchant }}",
+            "Nominal": "={{ $json.Nominal }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Tanggal",
+              "displayName": "Tanggal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Merchant",
+              "displayName": "Merchant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nominal",
+              "displayName": "Nominal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        528,
+        272
+      ],
+      "id": "dd7c4193-ba2a-4c22-a525-be2735a1373d",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qvUhiU3rVesFfyQj",
+          "name": "Google Sheets account 5"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Email Trigger (IMAP)": [
+      {
+        "json": {
+          "from": "Grab <no-reply@grab.com>",
+          "to": "contoh@gmail.com",
+          "subject": "Bukti Pembayaran GrabFood Anda",
+          "date": "2026-10-12T12:30:00.000Z",
+          "text": "Terima kasih telah menggunakan Grab. Tanggal pesanan: 12 Okt 2026. Pesanan GrabFood Anda sudah selesai. Biaya makanan Rp 38.000. Ongkos kirim Rp 7.000. Total Rp 45.000. Dibayar dengan OVO."
+        }
+      },
+      {
+        "json": {
+          "from": "Tokopedia <no-reply@tokopedia.com>",
+          "to": "contoh@gmail.com",
+          "subject": "Pembayaran Berhasil - Pesanan Anda",
+          "date": "2026-10-15T09:10:00.000Z",
+          "text": "Pembayaran berhasil. Tanggal Pembelian: 15 Okt 2026. Harga barang Rp 140.000. Ongkos kirim Rp 10.000. Total Pembayaran Rp 150.000. Terima kasih sudah berbelanja di Tokopedia."
+        }
+      },
+      {
+        "json": {
+          "from": "IDCloudHost <billing@idcloudhost.com>",
+          "to": "contoh@gmail.com",
+          "subject": "Invoice Pembayaran Hosting",
+          "date": "2026-10-18T03:45:00.000Z",
+          "text": "Pembayaran invoice Anda telah kami terima. Tanggal pembayaran: 18 Oktober 2026. Layanan: Paket Hosting Bisnis 1 tahun. Total Rp 120.000. Terima kasih telah menggunakan IDCloudHost."
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Switch Pengirim",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Pengirim": {
+      "main": [
+        [
+          {
+            "node": "Set Grab",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Tokopedia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set IDCloudHost",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Grab": {
+      "main": [
+        [
+          {
+            "node": "Merge (Append)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Tokopedia": {
+      "main": [
+        [
+          {
+            "node": "Merge (Append)",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set IDCloudHost": {
+      "main": [
+        [
+          {
+            "node": "Merge (Append)",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge (Append)": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b3d22cac-add6-42cb-b060-47408c1ed858",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc96f10ae7dc95d3c138575ba243a0a167923dbcb524841d451aadf9135d5fb3"
+  },
+  "nodeGroups": [],
+  "id": "AA5B3y7BDKBOnxzr",
+  "tags": []
+}
